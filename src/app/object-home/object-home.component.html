@@ -1,0 +1,64 @@
+<div class="container">
+    <div class="row pt-2">
+        <div class="col-md-10">
+            <div *ngIf="currentPosition !== ''">
+                Position_{{currentPosition}}
+            </div>
+            <div *ngIf="currentPosition === ''">
+                New Position
+            </div>
+        </div>
+        <div class="col-md-2">
+            <button type="button" class="btn btn-secondary" (click)="goBack()">Go Back</button>
+            <button type="button" class="btn btn-success savebtn" (click)="Save()">Save</button>
+        </div>
+    </div>
+    <div class="row pt-2">
+        <div class="col-md-3 container-border">
+            <!-- //Postion Data -->
+            <table>
+                <tr>
+                    <td>
+                        <img draggable="true" (dragstart)="drag('Circle',$event)" 
+                        src="assets/faicons/circle-outline.png" height="100px" alt="circle" />
+                    </td>
+                    <td>
+                        Circle
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <img draggable="true" (dragstart)="drag('Square',$event)"
+                        src="assets/faicons/square.png" height="120px" alt="square" />
+                    </td>
+                    <td>
+                        Square
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <img draggable="true" (dragstart)="drag('Ellipse',$event)"
+                        src="assets/faicons/circle-outline.png" height="95px" width="200px" alt="circle" />
+                    </td>
+                    <td>
+                        Ellipse
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <img draggable="true" (dragstart)="drag('Rectangle',$event)"
+                        src="assets/faicons/square.png" height="120px" width="200px" alt="square" />
+                    </td>
+                    <td>
+                        Rectangle
+                    </td>
+                </tr>
+            </table>
+        </div>
+        <div class="col-md-1">
+            <!-- Blank space between rows -->
+        </div>
+        <div class="col-md-8 container-border dragger"(drop)="drop($event)" (dragover)="allowDrop($event)" #dragger>
+        </div>
+    </div>
+</div>

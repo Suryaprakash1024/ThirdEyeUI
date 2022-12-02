@@ -1,0 +1,22 @@
+<div class="container">
+    <div class="row pt-4">
+        <div class="col-md-4 container-border">
+            <table>
+                <tr>
+                    <td>
+                        <strong>Postion</strong>
+                    </td>
+                </tr>
+                <tr *ngFor="let position of positions">
+                    <td class="crpoiter" (click)="SetPosition(position)">
+                        Position_{{position}}
+                    </td>
+                </tr>
+            </table>
+        </div>
+        <div class="col-md-1"></div>
+        <div class="col-md-2">
+            <button type="button" class="btn btn-success savebtn" (click)="Add()">Add New Position</button>
+        </div>
+    </div>
+</div>
