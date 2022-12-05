@@ -11,19 +11,20 @@ export class ObjectHomeComponent implements OnInit {
   constructor(private elementRef:ElementRef,
               private readonly appService: AppService,
               private readonly router: Router ) { }
-  startTop = 0;
-  startLeft = 0;
   x=0;
   y=0;
   currentShape = '';
   positionStatus: position[]= [];
-  currentPosition = ''
+  currentPosition = '';
+  objects :Objects[] = [];
+  redragger = 0;
+  rePosition: any;
   ngOnInit(): void {
     this.appService.currentPosition.subscribe(x => {
       this.currentPosition = x;
     });
     this.appService.GetObjects().subscribe(x =>{
-      console.log(x);
+      this.objects = x;
     })
     this.appService.GetPositionsById(this.currentPosition).subscribe(x=>{
       x.forEach((y:position) => {
@@ -43,19 +44,36 @@ export class ObjectHomeComponent implements OnInit {
     ev.dataTransfer.setData("text", ev.target.id);
     this.currentShape = shape;
   }
+  reDrag(Id : number,$event : any,position : position){
+    console.log(Id, position);
+    this.rePosition = position;
+    this.redragger = Id;
+  }
   
   drop(ev : any) {
     ev.preventDefault();
-    var data = ev.dataTransfer.getData("text");
-    this.startLeft = ev.srcElement.offsetLeft;
-    this.startTop = ev.srcElement.offsetTop;
-    this.pushToPositions("");
-    this.addHtmlElement();
-    // ev.target.appendChild(document.getElementById(data));
+    if(this.redragger != 0){
+      this.updatePosition(this.rePosition);
+      this.redragger = 0;
+    }
+    else{
+      this.pushToPositions("");
+    }
+    
   }
-
+  updatePosition(oldpos : position){
+    let newposition = this.positionStatus.find(x => x.Id == oldpos.Id);
+    if(newposition){
+    newposition.x = this.x;
+    newposition.y = this.y;
+    this.positionStatus = this.positionStatus.filter(x => x.Id != oldpos.Id);
+    this.positionStatus.push(newposition);
+    }
+    
+  }
   private pushToPositions(posId :string) {
     let Position: position = {
+      Id: this.positionStatus.length+1,
       positionId: posId,
       shape: this.currentShape,
       x: this.x,
@@ -69,34 +87,7 @@ export class ObjectHomeComponent implements OnInit {
     this.y = pos.y;
     this.currentShape = pos.shape;
     this.pushToPositions(pos.positionId);
-    this.addHtmlElement();
     }
-  private addHtmlElement() {
-    var d1 = this.elementRef.nativeElement.querySelector('.dragger');
-    switch(this.currentShape){
-      case 'Circle':{
-        d1.insertAdjacentHTML('beforeend', '<img src="assets/faicons/circle-outline.png" height="100px" alt="circle" '+
-        'style="position:absolute;margin-left:' + this.x + 'px;margin-top:' + this.y + 'px;">');
-        break;
-      } 
-      case 'Square':{
-        d1.insertAdjacentHTML('beforeend', '<img src="assets/faicons/square.png" height="120px" alt="square" '+
-        'style="position:absolute;margin-left:' + this.x + 'px;margin-top:' + this.y + 'px;">');
-        break;
-      }
-      case 'Ellipse':{
-        d1.insertAdjacentHTML('beforeend', '<img src="assets/faicons/circle-outline.png" height="95px" width="200px" alt="ellipse" '+
-        'style="position:absolute;margin-left:' + this.x + 'px;margin-top:' + this.y + 'px;">');
-        break;
-      }
-      case 'Rectangle':{
-        d1.insertAdjacentHTML('beforeend', '<img src="assets/faicons/square.png" height="120px" width="200px" alt="rectange" '+
-        'style="position:absolute;margin-left:' + this.x + 'px;margin-top:' + this.y + 'px;">');
-        break;
-      }
-    }
-    
-  }
   goBack(){
     this.router.navigate(['/position']);
   }
@@ -118,8 +109,13 @@ export class ObjectHomeComponent implements OnInit {
   }
 }
 export interface position{
+  Id: number;
   positionId: string;
   x: number;
   y:number;
   shape : string;
+}
+export interface Objects{
+  id : number;
+  shape: string;
 }
