@@ -8,6 +8,7 @@ import { AppService } from '../app-service';
   styleUrls: ['./object-home.component.scss']
 })
 export class ObjectHomeComponent implements OnInit {
+  Id: number = 0;
   constructor(private elementRef:ElementRef,
               private readonly appService: AppService,
               private readonly router: Router ) { }
@@ -37,17 +38,15 @@ export class ObjectHomeComponent implements OnInit {
     ev.preventDefault();
     this.x = ev.x-588;
     this.y = ev.y-90;
-    // console.log(ev.x-588,ev.y-90);
   }
   
   drag(shape:string,ev : any) {
     ev.dataTransfer.setData("text", ev.target.id);
     this.currentShape = shape;
   }
-  reDrag(Id : number,$event : any,position : position){
-    console.log(Id, position);
+  reDrag(pId : number,$event : any,position : position){
     this.rePosition = position;
-    this.redragger = Id;
+    this.redragger = pId;
   }
   
   drop(ev : any) {
@@ -62,18 +61,22 @@ export class ObjectHomeComponent implements OnInit {
     
   }
   updatePosition(oldpos : position){
-    let newposition = this.positionStatus.find(x => x.Id == oldpos.Id);
+    let newposition = this.positionStatus.find(x => x.pId == oldpos.pId);
     if(newposition){
-    newposition.x = this.x;
-    newposition.y = this.y;
-    this.positionStatus = this.positionStatus.filter(x => x.Id != oldpos.Id);
-    this.positionStatus.push(newposition);
+      newposition.x = this.x;
+      newposition.y = this.y;
+      this.positionStatus = this.positionStatus.filter(x => x.pId != oldpos.pId);
+      this.positionStatus.push(newposition);
+      if(newposition.id != 0){
+        this.appService.UpdatePositions(newposition).subscribe();
+      }
     }
     
   }
   private pushToPositions(posId :string) {
     let Position: position = {
-      Id: this.positionStatus.length+1,
+      id:this.Id,
+      pId: this.positionStatus.length+1,
       positionId: posId,
       shape: this.currentShape,
       x: this.x,
@@ -85,14 +88,15 @@ export class ObjectHomeComponent implements OnInit {
   private initAddElements(pos:position){
     this.x = pos.x;
     this.y = pos.y;
+    this.Id = pos.id;
     this.currentShape = pos.shape;
     this.pushToPositions(pos.positionId);
+    this.Id = 0;
     }
   goBack(){
     this.router.navigate(['/position']);
   }
   Save(){
-    console.log(this.positionStatus);
     let newpos = this.positionStatus.filter(x => x.positionId === '');
     if(this.currentPosition != ''){
       newpos.forEach(x =>{
@@ -109,7 +113,8 @@ export class ObjectHomeComponent implements OnInit {
   }
 }
 export interface position{
-  Id: number;
+  id: number;
+  pId:number;
   positionId: string;
   x: number;
   y:number;

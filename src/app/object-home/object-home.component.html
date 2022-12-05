@@ -33,7 +33,7 @@
         </div>
         <div class="col-md-8 container-border dragger"(drop)="drop($event)" (dragover)="allowDrop($event)" #dragger>
             <span *ngFor="let position of positionStatus">
-                <img draggable="true" (dragstart)="reDrag(position.Id,$event,position)" style="position: absolute;margin-left:{{position.x}}px;margin-top:{{position.y}}px"
+                <img draggable="true" (dragstart)="reDrag(position.pId,$event,position)" style="position: absolute;margin-left:{{position.x}}px;margin-top:{{position.y}}px"
                         src="assets/faicons/{{position.shape}}.png" height="100px" [alt]=position.shape />
             </span>
         </div>

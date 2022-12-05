@@ -21,18 +21,19 @@ export class AppService {
     SavePositions(param: position[]): Observable<any> {
     const apiType = 'Master/SavePositions';
     const url = `${this.ServiceUrl}/${apiType}`;
-    // const headers=new HttpHeaders()
-    //         .set('content-type','text/plain');
-            // .set('Access-Control-Allow-Origin','*')
-            // .set('Access-Control-Allow-Headers','*')
-            // .set('Access-Control-Allow-Headers','Access-Control-Allow-Headers, Authorization, X-Requested-With');
-    
-    
     return this.http.post(url+"?positions="+(JSON.stringify(param)),"")//,{ 'headers': headers })
         .pipe(map(data => {
             return data;    
         }));
     }
+    UpdatePositions(param: position): Observable<any> {
+        const apiType = 'Master/UpdatePositions';
+        const url = `${this.ServiceUrl}/${apiType}`;
+        return this.http.post(url+"?positions="+(JSON.stringify(param)),"")//,{ 'headers': headers })
+            .pipe(map(data => {
+                return data;    
+            }));
+        }
     GetObjects():Observable<any>{
     const apiType = 'Master/GetObjects';
     const url = `${this.ServiceUrl}/${apiType}`;
@@ -56,7 +57,6 @@ export class AppService {
         const url = `${this.ServiceUrl}/${apiType}?Id=${Id}`;
         return this.http.get(url)
             .pipe(map(data => {
-                console.log(data);
                 return data;
             }));
     }
